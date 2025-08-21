@@ -1,3 +1,8 @@
+
+![Alt text for my diagram](path/to/your/diagram.svg)
+
+
+
 ## 📂 Structure
 
 ### 1) Core_Concepts.md
