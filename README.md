@@ -1,5 +1,5 @@
 
-![Alt text for my diagram](https://github.com/uv-goswami/Cryptography/blob/main/Crypto.svg)
+![Alt text for my diagram](https://github.com/uv-goswami/Cryptography/blob/main/Cryptography_img.png)
 
 
 
