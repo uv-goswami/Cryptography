@@ -1,4 +1,4 @@
-
+![signature](https://github.com/uv-goswami/Cryptography/blob/main/Diagrams/Digital_signature.png)
 # ✍️ Cryptographic Signatures
 
 Cryptographic signatures are foundational primitives in security protocols. They ensure authenticity, integrity, and non-repudiation of digital messages and transactions. This document outlines various signature types, their schemes, properties, infrastructure, and applications.
@@ -127,10 +127,3 @@ Designed to resist attacks from quantum computers. These schemes are part of NIS
 | Post-Quantum         | Quantum-Safe Protocols, NIST Standards  | Long-Term Security, Future-Proofing      |
 
 ---
-
-## 📚 Further Reading
-
-- [NIST PQC Project](https://csrc.nist.gov/projects/post-quantum-cryptography)
-- [Monero Ring Signature Whitepaper](https://web.getmonero.org/resources/research-lab/)
-- [Threshold Signature Schemes](https://eprint.iacr.org/2020/499)
-- [BLS Signatures](https://crypto.stanford.edu/~dabo/pubs/papers/BLSmultisig.pdf)
