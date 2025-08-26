@@ -1,3 +1,6 @@
+![confidentiality](https://github.com/uv-goswami/Cryptography/blob/main/Diagrams/Confidentiality.png)
+
+
 # Confidentiality
  
 - Protection of information so that only authorized users can access it.(ensures user Identification & Authentication)  
