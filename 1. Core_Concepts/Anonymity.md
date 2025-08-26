@@ -1,3 +1,5 @@
+![anonymity](https://github.com/uv-goswami/Cryptography/blob/main/Diagrams/Anonymity.png)
+
 # 🕵️‍♂️ Anonymity
 
 Anonymity refers to the ability to keep the identity of the sender, receiver, or participant hidden during communication or interaction. It ensures that while an event or message may be known, the identities behind it remain concealed.
