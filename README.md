@@ -14,7 +14,7 @@ A well-organized breakdown of modern cryptographic primitives, privacy-enhancing
 
 **Foundational Primitives & Security Triad**
 
-* **Confidentiality, Integrity, Authenticity** — Core principles of information security.
+* **Confidentiality, Integrity, Anonymity** — Core principles of information security.
 * **Signatures** — Threshold Signatures, Group Signatures, Blind Signature
 * **PRF / HMAC / KDF / MAC** — Pseudorandomness, integrity, and key derivation.
 * **Random Oracle Model** — Idealized hash function model for proof soundness.
