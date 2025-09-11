@@ -15,10 +15,7 @@ A well-organized breakdown of modern cryptographic primitives, privacy-enhancing
 **Foundational Primitives & Security Triad**
 
 * **Confidentiality, Integrity, Authenticity** — Core principles of information security.
-* **Digital Signatures** — ECDSA, EdDSA; authenticity & non-repudiation.
-* **Threshold Signatures** — Split signing authority among `t-of-n` participants.
-* **Group Signatures** — Anonymous group-level signing with revocability.
-* **Blind Signatures** — Enables signing data without revealing content (used in e-cash, anonymous credentials).
+* **Signatures** — Threshold Signatures, Group Signatures, Blind Signature
 * **PRF / HMAC / KDF / MAC** — Pseudorandomness, integrity, and key derivation.
 * **Random Oracle Model** — Idealized hash function model for proof soundness.
 * **CRS (Common Reference String)** — Setup assumption in NIZKs like zk-SNARKs.
