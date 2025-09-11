@@ -15,7 +15,6 @@ A well-organized breakdown of modern cryptographic primitives, privacy-enhancing
 **Foundational Primitives & Security Triad**
 
 * **Confidentiality, Integrity, Authenticity** — Core principles of information security.
-* **Confidentiality vs Anonymity** — Secrecy of content vs unlinkability of actors.
 * **Digital Signatures** — ECDSA, EdDSA; authenticity & non-repudiation.
 * **Threshold Signatures** — Split signing authority among `t-of-n` participants.
 * **Group Signatures** — Anonymous group-level signing with revocability.
