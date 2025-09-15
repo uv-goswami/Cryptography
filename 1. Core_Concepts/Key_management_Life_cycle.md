@@ -436,7 +436,7 @@ Use short-lived session keys derived from long-term master keys via HKDF to redu
 Key Distribution is the process of securely delivering cryptographic keys from their point of generation to the authorized recipients. It guarantees that only intended parties receive the correct key material without tampering or interception.
 
 ---
-![KD](https://github.com/uv-goswami/Cryptography/blob/4ee4e748b52174795ca93cf88a85f458205fc7be/Diagrams/KeyDistribution.drawio.svg)
+![KD](https://github.com/uv-goswami/Cryptography/blob/cfa974ef945c6012a8ad35c319bf5a307be5a625/Diagrams/KeyDistribution.drawio.svg)
 
 ---
 
@@ -609,8 +609,70 @@ How
 | CI/CD Secrets             | Encrypted Vault Integration | Automated pipeline deployment | Build agents                             |
 
 
-      
+---
 
+### Key Destruction  
+
+Key Destruction is the process of completely and irreversibly removing cryptographic key material from all storage and backup locations so that it cannot be recovered or misused.  
+
+---
+
+![KDest](https://github.com/uv-goswami/Cryptography/blob/cfa974ef945c6012a8ad35c319bf5a307be5a625/Diagrams/KeyDestruction.drawio.svg)
+
+---
+
+**Objectives**  
+
+* Prevent any future use of retired, expired, or compromised keys  
+* Eliminate residual key data that could be extracted by attackers  
+* Satisfy regulatory and compliance mandates for secure disposal  
+
+---  
+
+#### When to Destroy  
+
+* At scheduled end-of-life or after key rotation/renewal  
+* Immediately upon detection of compromise or suspected leakage  
+* Following migration to new algorithms or platforms  
+* During decommissioning of hardware devices or services  
+
+---  
+
+#### Destruction Techniques  
+
+* Memory Zeroization  
+  - Overwrite RAM buffers or CPU registers holding the key material  
+  - Use secure coding practices to invoke constant-time zero routines  
+* Cryptographic Erasure  
+  - Delete or revoke the wrapping key so that wrapped keys become unrecoverable  
+* Disk/Storage Wipe  
+  - Overwrite disk sectors or use secure erase commands (e.g., ATA Secure Erase)  
+  - Apply NIST SP 800-88 media sanitization guidelines for SSD/HDD  
+* Degaussing & Physical Destruction  
+  - Demagnetize storage media for magnetic disks  
+  - Shred or incinerate physical tokens, smartcards, or HSM modules  
+* Hardware Reset Commands  
+  - Invoke secure-erase or factory-reset features in TPMs, HSMs, and secure elements  
+
+---  
+
+#### Verification & Auditing  
+
+* Log every destruction event with key identifiers and timestamps  
+* Perform post-wipe validation scans or checksum comparisons  
+* Include destruction proofs or certificates when required by policy  
+
+---  
+
+#### Implementation Tips  
+
+* Automate destruction workflows in your Key Management Service (KMS) or vault  
+* Integrate zeroization routines in application shutdown paths  
+* Train operations teams on hardware-based disposal procedures  
+* Retain only metadata (key IDs, usage logs) for audit and forensics, never the key bits themselves  
+* Regularly review and test destruction processes as part of your security posture  
+
+---  
 
 
 
