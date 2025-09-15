@@ -493,6 +493,83 @@ If distribution isn’t needed—because endpoints already share a secret or ope
 * Continuous Key Delivery: streaming session keys for real-time applications  
 
 ---
+## Distribution Mechanisms
+
+### KEM (Key Encapsulation Mechanism)
+
+What  
+KEM is a hybrid encryption primitive that uses asymmetric keys to securely “encapsulate” a randomly generated symmetric key. The recipient uses their private key to “decapsulate” and recover the symmetric key without exposing it in transit.
+
+How  
+1. Encapsulate:  
+   * Sender generates a random data-encryption key (DEK).  
+   * DEK is encrypted (wrapped) under the receiver’s public key, producing a ciphertext capsule.  
+   * Sender transmits the capsule plus any associated header data.  
+2. Decapsulate:  
+   * Receiver uses their private key to decrypt the capsule.  
+   * DEK is recovered in its original form, ready for bulk encryption/decryption.
+
+**Use Cases:**  
+* TLS hybrid handshake (ECDH-KEM variants)  
+* Email encryption with ECIES or RSA-KEM  
+* Post-quantum KEMs (e.g., Kyber) in emerging protocols  
+
+---
+
+### KEX (Key Exchange)
+
+What  
+KEX is an interactive protocol allowing two parties to agree on a shared secret key over an insecure channel, without directly sending the secret itself.
+
+How  
+1. Parameter Setup:  
+   * Both parties agree on public domain parameters (e.g., prime p and generator g for DH, or curve parameters for ECDH).  
+2. Ephemeral Key Generation:  
+   * Each party generates a private key (a random integer) and computes its public counterpart.  
+3. Exchange:  
+   * Parties exchange their public values.  
+4. Shared Secret Computation:  
+   * Each party uses their private key and the other party’s public value to compute the same shared secret.  
+5. Derive Symmetric Keys:  
+   * Apply a KDF (e.g., HKDF) to the shared secret to produce session keys for encryption and MAC.
+
+**Use Cases:**  
+* Classic Diffie-Hellman in VPNs and SSH  
+* Elliptic-curve ECDH in TLS and secure messaging  
+* Ephemeral DH for forward secrecy  
+
+---
+
+### KSX (Key Synchronization Exchange)
+
+What  
+KSX replicates symmetric keys or key versions across multiple nodes in real time, ensuring all replicas maintain the same key state.
+
+How  
+* Uses a publish-subscribe or multi-master replication model.  
+* On key creation or rotation, the originator publishes the new key or version.  
+* Subscribers receive updates automatically and replace their local copy.  
+
+**Use Cases:**  
+* Geo-redundant database clusters with transparent data encryption  
+* Distributed cache encryption (Redis, Memcached)  
+
+---
+
+### KMX (Key Management eXchange)
+
+What  
+KMX is a protocol/API standard for transferring cryptographic keys, key metadata, and lifecycle commands between heterogeneous KMS instances.
+
+How  
+* Defines operations for “ExportKey,” “ImportKey,” and “SynchronizeKey.”  
+* Often built on KMIP or vendor-specific extensions.  
+* Ensures secure transport (TLS/mTLS) and mutual authentication between KMS endpoints.  
+
+**Use Cases:**  
+* Multi-cloud or hybrid deployments requiring centralized key policies  
+* KMS migration or failover scenarios where keys must move between providers  
+---
 
 ## Advantages & Disadvantages
 
