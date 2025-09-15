@@ -99,6 +99,132 @@ Applications: Data integrity, API authentication, secure storage.
 
 **Applications**: TLS handshake, secure messaging, VPNs.
 
+---
+## Key Life Cycle
+
+Key Life Cycle describes all phases a cryptographic key goes through—from creation to destruction and replacement—to ensure secure handling and minimize risk.
+
+![KLC](https://github.com/uv-goswami/Cryptography/blob/289897c43e356e1038d2c73d58ed611b64de11a0/Diagrams/Key_Life_cycle.svg)
+
+**Purpose**  
+* Maintain confidentiality, integrity, and availability of keys  
+* Enforce periodic renewal and limit key exposure  
+* Meet audit, compliance, and forensic requirements  
+
+---
+
+### Stages of the Key Life Cycle
+
+1. Key Generation  
+2. Key Storage  
+3. Key Distribution  
+4. Key Installation & Usage  
+5. Monitoring & Logging  
+6. Key Rotation / Renewal  
+7. Key Revocation  
+8. Archive & Metadata Retention  
+9. Key Destruction  
+10. Key Replacement / Regeneration  
+
+---
+
+### Stage Details
+
+#### Key Generation  
+Create keys with high-quality entropy and algorithms (as detailed in the Key Generation section).
+
+#### Key Storage  
+- Software vaults with strong encryption (AWS KMS, HashiCorp Vault)  
+- Hardware modules (TPM chips, HSM appliances)  
+- In-memory only for short-lived session keys  
+
+#### Key Distribution  
+| Method                 | Description                                                |
+|------------------------|------------------------------------------------------------|
+| Manual Transfer        | USB token, QR code, paper card                             |
+| PKI Certificates       | X.509 certificates distributed via trusted CAs             |
+| KEM / KEX Protocols    | Wrap or negotiate keys in protocols (Diffie-Hellman, ECDH) |
+
+#### Key Installation & Usage  
+* Install keys into applications or devices  
+* Verify integrity (fingerprint checks, cert chain validation)  
+* Use in encryption, decryption, signing, or verification operations  
+
+#### Monitoring & Logging  
+* Track key usage events and access attempts  
+* Alert on anomalies (unusual frequency or context)  
+* Store audit logs for compliance  
+
+#### Key Rotation / Renewal  
+* Replace old keys at regular intervals (e.g., every 90 days)  
+* Generate new keys and re-distribute securely  
+* Update systems to use the fresh key material  
+
+#### Key Revocation  
+* Mark a key as invalid (compromise or end-of-life)  
+* Publish revocation status (CRL, OCSP)  
+* Prevent further use immediately  
+
+#### Archive & Metadata Retention  
+* Store key identifiers, usage history, and revocation records  
+* Keep data for audits, forensics, and compliance reporting  
+
+#### Key Destruction  
+* Securely erase key material and backups  
+* Zero-ize memory and overwrite storage locations  
+
+#### Key Replacement / Regeneration  
+* Loop back to Generation for new key issuance  
+* Ensure continuity by re-establishing secure channels  
+
+---
+
+### Applications
+
+* TLS/SSL handshakes and secure web traffic  
+* VPN tunnels (IPsec, OpenVPN)  
+* Secure messaging protocols (Signal, WhatsApp)  
+* Disk and database encryption solutions  
+* IoT device authentication with PSK or certificates  
+
+---
+
+### Advantages & Disadvantages
+
+- Advantages:  
+  * Structured approach reduces accidental exposure  
+  * Regular renewal limits damage from compromised keys  
+  * Audit trails satisfy regulatory requirements  
+
+- Disadvantages:  
+  * Operational complexity—many stages to manage  
+  * Potential downtime during rotation or revocation  
+  * Requires robust tooling (KMS, HSM) to scale securely  
+
+---
+
+### Implementation Tips & Prerequisites
+
+* Automate lifecycle events with a Key Management Service (KMS)  
+* Integrate Hardware Security Modules (HSM) for high-value keys  
+* Define clear rotation and revocation policies in SLAs  
+* Monitor entropy sources and audit logs continually  
+* Train teams on incident response for key compromise  
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Key Generation
 
 Key Generation is the process of creating cryptographic keys using high-quality randomness and defined algorithms. These keys become the foundation for all encryption, signing, and authentication operations.
@@ -202,19 +328,107 @@ Key Generation is the process of creating cryptographic keys using high-quality 
 
 ![KG](https://github.com/uv-goswami/Cryptography/blob/88ca27e88372ff86bd61dcdbb245027ff2991852/Diagrams/KeyGeneration.drawio.svg)
 
-----
+---
+# Key Storage
+
+Key Storage is the process of safely holding cryptographic keys over their entire lifecycle so they remain confidential, intact, and available only to authorized components.
+
+**Objectives**
+
+* Protect keys from unauthorized access or theft  
+* Ensure keys are available when needed for cryptographic operations  
+* Minimize exposure by limiting persistent copies  
+
+---
+
+## Storage Methods
+
+| Method                        | Description                                                                 | Examples                                   |
+|-------------------------------|-----------------------------------------------------------------------------|--------------------------------------------|
+| Software-Based Key Vaults     | Encrypted key stores managed by software services                           | HashiCorp Vault; Google Secret Manager     |
+| Cloud Key Management Services | Managed services exposing key APIs with optional HSM backing                | AWS KMS; Azure Key Vault                   |
+| Hardware Security Modules     | Dedicated hardware appliances and chips that generate and securely hold keys | HSM appliances; TPM chips                  |
+| Processor-Isolated Enclaves   | CPU-enforced memory regions that protect keys from the OS and applications   | Intel SGX; ARM TrustZone                   |
+| Ephemeral In-Memory Storage   | Session or ephemeral keys held in RAM or CPU registers, cleared on shutdown  | TLS session keys; ephemeral ECDH keys      |
+| Threshold Cryptography        | Splits keys into shares and reconstructs them in memory when needed         | Shamir Secret Sharing; MPC protocols       |
+
+
+---
+
+## Memory & Cache Considerations
+
+Keys in application memory and CPU caches/registers enable high-performance operations but are vulnerable if the host OS or hardware is compromised.  
+
+To mitigate this risk:  
+
+* Lock pages in RAM (e.g., `mlock`) to prevent swapping to disk  
+* Use constant-time implementations to avoid cache-timing side-channels  
+* Zero-ize buffers immediately after use to remove remnants  
+
+Secure enclaves (SGX, TrustZone) provide hardware-enforced isolation so keys never leave protected memory regions, even if the OS is compromised.
+
+---
+
+## Key Backup & Recovery
+
+Regularly back up encrypted key blobs (wrapped by a master key) to off-site or multi-region storage.  
+
+Use secret-sharing to split backup keys across trustees or secure locations.  
+
+Automate recovery drills to verify that keys can be restored under disaster scenarios.
+
+---
+
+## Key Access & Authorization
+
+Enforce RBAC or ABAC policies to limit who can generate, read, wrap, or export keys.  
+
+Log every key operation (generate, encrypt/decrypt, rotate, destroy) for audit and compliance.  
+
+Use short-lived session keys derived from long-term master keys via HKDF to reduce long-term exposure.
+
+---
+
+## Advantages & Disadvantages
+
+**Advantages**  
+* Centralized vaults simplify policy enforcement and auditing  
+* Hardware modules and enclaves resist software-level attacks  
+* In-memory storage supports low-latency operations  
+
+**Disadvantages**  
+* Hardware modules add cost and integration complexity  
+* In-memory keys risk leakage if the host is compromised  
+* Vaultless or enclave solutions can be hard to scale across diverse environments
+
+---
+
+## Implementation Tips & Prerequisites
+
+* Classify keys by sensitivity and choose storage accordingly (session vs. root keys)  
+* For in-memory keys, enforce strict page locking and immediate zero-ization on release  
+* Integrate Hardware Security Modules (HSM) or TPM for high-value key protection  
+* Leverage managed KMS offerings for automated rotation, audit logging, and access control  
+* Ensure code running in secure enclaves is minimal and audited to reduce attack surface  
+
+---
+| Key Type                    | Storage Location                 | When Stored               | Primary Usage                                |
+|-----------------------------|----------------------------------|---------------------------|----------------------------------------------|
+| TLS Session Key             | Application RAM / CPU registers  | During active TLS session | Encrypt/decrypt web traffic                  |
+| ECDH Ephemeral Private Key  | Secure Enclave or mlocked RAM    | During TLS handshake      | Derive shared secret                         |
+| Data-at-Rest AES Master Key | Cloud KMS (AES-wrapped in HSM)   | Persistently in vault     | Encrypt database or disk blocks              |
+| Database Column Key         | Software Vault (e.g., Vault)     | At application startup    | Encrypt individual data columns              |
+| Root CA Private Key         | Offline HSM / Air-gapped vault   | Offline, rarely accessed  | Sign leaf certificates                       |
+| SSH Host Private Key        | Server’s TPM or encrypted disk   | On server boot           | Authenticate incoming SSH connections         |
+| Blockchain Wallet Private Key | Hardware Wallet / TPM          | Provisioning & transaction time | Sign blockchain transactions            |
+| IoT Device Pre-Shared Key   | On-device Secure Element / TPM    | Manufacturing / provisioning | Authenticate device to cloud services     |
+| OAuth2 Client Secret        | Encrypted config store (Vault)    | During service startup   | Authorize API calls                          |
+| Kerberos TGT Key            | In-memory Ticket Cache            | Upon user logon          | Issue and decrypt Kerberos tickets           |
+```
+
   
       
 
 
 
 
-
-
-
-
-
-
-
-# Key Life Cycle 
-![KLC](https://github.com/uv-goswami/Cryptography/blob/289897c43e356e1038d2c73d58ed611b64de11a0/Diagrams/Key_Life_cycle.svg)
