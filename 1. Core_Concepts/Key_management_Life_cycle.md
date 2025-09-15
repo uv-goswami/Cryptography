@@ -333,6 +333,10 @@ Key Generation is the process of creating cryptographic keys using high-quality 
 
 Key Storage is the process of safely holding cryptographic keys over their entire lifecycle so they remain confidential, intact, and available only to authorized components.
 
+---
+![KS](https://github.com/uv-goswami/Cryptography/blob/a29a2aef95acb2afada321985b4e760727f73938/Diagrams/Storage.drawio.svg)
+
+---
 **Objectives**
 
 * Protect keys from unauthorized access or theft  
@@ -424,8 +428,8 @@ Use short-lived session keys derived from long-term master keys via HKDF to redu
 | IoT Device Pre-Shared Key   | On-device Secure Element / TPM    | Manufacturing / provisioning | Authenticate device to cloud services     |
 | OAuth2 Client Secret        | Encrypted config store (Vault)    | During service startup   | Authorize API calls                          |
 | Kerberos TGT Key            | In-memory Ticket Cache            | Upon user logon          | Issue and decrypt Kerberos tickets           |
-```
 
+---
   
       
 
