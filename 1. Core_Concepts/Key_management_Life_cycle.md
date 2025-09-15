@@ -430,7 +430,108 @@ Use short-lived session keys derived from long-term master keys via HKDF to redu
 | Kerberos TGT Key            | In-memory Ticket Cache            | Upon user logon          | Issue and decrypt Kerberos tickets           |
 
 ---
-  
+
+# Key Distribution
+
+Key Distribution is the process of securely delivering cryptographic keys from their point of generation to the authorized recipients. It guarantees that only intended parties receive the correct key material without tampering or interception.
+
+---
+![KD](https://github.com/uv-goswami/Cryptography/blob/4ee4e748b52174795ca93cf88a85f458205fc7be/Diagrams/KeyDistribution.drawio.svg)
+
+---
+
+**Objectives**
+
+* Ensure confidentiality and integrity of keys during transit  
+* Authenticate sender and receiver before key acceptance  
+* Provide reliable delivery mechanisms with revocation support  
+
+---
+
+## Distribution Mechanisms
+
+| Mechanism                   | Description                                                          | When to Use                                           | Examples                                 |
+|-----------------------------|----------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------|
+| Manual Out-of-Band          | Physically transfer keys (USB, paper, QR code)                       | Small-scale, high-security scenarios                  | Hardware tokens; printed key cards       |
+| Public Key Infrastructure   | Issue keys as certificates via trusted CAs                           | Enterprise systems; scalable identity management      | X.509 certificates in TLS/HTTPS          |
+| KEM / KEX Protocols         | Wrap or negotiate session keys within cryptographic handshakes       | Automated, dynamic environments                       | RSA-OAEP wrapping; ECDH in TLS handshake |
+| PSK (Pre-Shared Key)        | Keys provisioned in advance and embedded in devices or software      | Closed networks; IoT with limited compute             | Wi-Fi WPA2; IoT provisioning             |
+| API-Based Distribution      | Retrieve keys from a central KMS over authenticated channels         | Cloud services; microservices                         | KMIP; AWS KMS GenerateDataKey API        |
+| Secure Remote Injection     | Inject keys into hardware modules over protected channels            | Device manufacturing; remote hardware onboarding      | TPM remote provisioning; Secure Boot APIs |
+
+---
+
+## Distribution Needed?
+
+When no prior shared secret exists or automated renewal is required, dynamic distribution (KEM/KEX, API) is used.  
+
+If distribution isn’t needed—because endpoints already share a secret or operate offline—you use Pre-Shared Keys or local vault access instead.  
+
+**Reasons to Skip Distribution**  
+* Closed or air-gapped environments  
+* Extremely resource-constrained devices  
+* One-time provisioning scenarios  
+
+---
+
+## Security Properties
+
+* Confidentiality: encrypt or wrap keys (AES key wrap, RSA-OAEP)  
+* Integrity: include MACs or signatures to detect tampering  
+* Authentication: mutual endpoint verification before acceptance  
+* Replay Protection: use nonces, timestamps, or sequence numbers  
+* Availability: design fallback channels and retries  
+
+---
+
+## Latest Techniques & Terms
+
+* Key Wrapping (RFC 3394): standardized AES-based key encryption  
+* WKD (Web Key Directory): auto-discover public keys in email systems  
+* DARE (Dynamic Access Revocation Exchange): instant revocation of distributed keys  
+* OPC UA Certificate Management: secure machine-to-machine key exchange  
+* Continuous Key Delivery: streaming session keys for real-time applications  
+
+---
+
+## Advantages & Disadvantages
+
+**Advantages**  
+* Automated protocols scale to millions of endpoints  
+* Out-of-band transfers minimize attack surface during transit  
+* API-based delivery integrates with CI/CD and orchestration  
+
+**Disadvantages**  
+* Manual methods don’t scale and risk human error  
+* KEX protocols require initial trust establishment (PKI bootstrap)  
+* Cloud APIs introduce third-party trust dependencies  
+
+---
+
+## Implementation Tips & Prerequisites
+
+* Establish a trust anchor (root CA or hardware root of trust) first  
+* Use TLS or secure channels for API-based distribution  
+* Protect distribution endpoints with strong authentication (mTLS, HSM seals)  
+* Automate retries and monitoring for delivery failures  
+* Implement immediate revocation paths for compromised keys  
+
+---
+
+| Key Type                  | Distribution Method         | Why/When                      | Recipient                                |
+|---------------------------|-----------------------------|-------------------------------|------------------------------------------|
+| TLS Server Certificate    | PKI Certificate Download    | Web server onboarding         | Web clients                              |
+| VPN PSK                   | Manual Out-of-Band          | Small office VPN setup        | Remote employees                         |
+| Kubernetes API Server Key | Cloud KMS API               | Automated cluster provisioning | Control plane nodes                     |
+| IoT Device Root Key       | Secure Remote Injection     | Factory provisioning          | Embedded device TPM                     |
+| Messaging App Session Key | Diffie-Hellman Handshake    | Per-session confidentiality   | Two chat endpoints                      |
+| Database Master Key       | Hardware Token + KEM Wrap   | Initial deployment            | DB server HSM                            |
+| SSH Host Key              | Configuration Management    | Server fleet roll-out         | SSH clients                              |
+| Mobile App Encryption Key | WKD / API-Based Delivery    | App install & update          | Mobile devices                           |
+| Blockchain Node Key       | Hardware Wallet Export      | Node bootstrap                | Validator nodes                          |
+| CI/CD Secrets             | Encrypted Vault Integration | Automated pipeline deployment | Build agents                             |
+
+
       
 
 
