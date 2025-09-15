@@ -99,7 +99,110 @@ Applications: Data integrity, API authentication, secure storage.
 
 **Applications**: TLS handshake, secure messaging, VPNs.
 
+## Key Generation
 
+Key Generation is the process of creating cryptographic keys using high-quality randomness and defined algorithms. These keys become the foundation for all encryption, signing, and authentication operations.
+
+**Purpose**  
+* Produce unpredictable keys that resist guessing and attacks  
+* Ensure uniqueness so no two users share the same secret  
+* Provide both symmetric and asymmetric key material as needed  
+
+---
+
+### Sources of Entropy
+
+| Source            | Description                                                              |
+|-------------------|--------------------------------------------------------------------------|
+| TRNG (True RNG)   | Hardware-based randomness from physical phenomena (e.g., electronic noise) |
+| PRNG (Pseudo RNG) | Software generator seeded by entropy to produce streams of random bits   |
+| QRNG (Quantum RNG)| Quantum effects (e.g., photon behavior) supplying extremely high entropy |
+| OS Facilities     | Built-in system calls (`/dev/random`, `getrandom()`, CryptGenRandom)     |
+
+**Applications:**  
+1. Seeding CSPRNGs for key material  
+2. Generating nonces and salts in protocols  
+3. Creating session keys in secure channels  
+
+---
+
+### Symmetric Key Generation
+
+1. Gather sufficient entropy from TRNG or OS facilities.  
+2. Seed a cryptographically secure PRNG (CSPRNG).  
+3. Read N random bytes (e.g., 16 bytes for AES-128, 32 bytes for AES-256).  
+4. Optionally wrap or encrypt the raw key (key-wrapping) before storage.  
+
+| Algorithm  | Description                                  |
+|------------|----------------------------------------------|
+| AES Key    | Read 128/192/256 random bits directly       |
+| ChaCha20   | Read 256 bits for ChaCha20 symmetric key    |
+
+**Applications:**  
+- Bulk data encryption (disk, database)  
+- Securing communication sessions (TLS, VPN)  
+
+---
+
+### Asymmetric Key Generation
+
+1. Collect high-quality entropy as above.  
+2. Run the key algorithm:  
+   - **RSA**: Pick two large random primes, compute n = p·q, derive e/d exponents.  
+   - **ECC**: Choose a random integer d in [1, n–1], compute public point Q = d·G.  
+3. Package keys in standard formats (PKCS#8, X.509, OpenSSH).  
+4. Store private keys in secure vaults (HSM/TPM) and publish public keys or certificates.
+
+| Algorithm     | Key Material Generated                       |
+|---------------|-----------------------------------------------|
+| RSA-2048      | 2048-bit modulus, public/private exponents   |
+| ECDSA (P-256) | 256-bit private scalar and public point Q    |
+| EdDSA (Ed25519)| 256-bit private scalar and public key bytes |
+
+**Applications:**  
+- Certificate issuance in PKI (HTTPS, email)  
+- Digital signatures for code and documents  
+- Identity management in SSH and blockchain  
+
+---
+
+### Key Formatting & Storage
+
+- **Formats**:  
+  - PKCS#8 for private keys, X.509 for public certs  
+  - Raw byte blobs for hardware modules  
+- **Storage**:  
+  - Software vaults with encryption (e.g., AWS KMS, HashiCorp Vault)  
+  - Hardware modules (TPM chips, HSM appliances)  
+- **Post-Generation Cleanup**:  
+  - Zero-ize memory buffers holding raw key bytes  
+  - Securely wipe any temporary files
+
+---
+
+### Advantages & Disadvantages
+
+- Advantages:  
+  - High-quality randomness resists brute-force and prediction  
+  - Standards-based algorithms ensure interoperability  
+- Disadvantages:  
+  - Hardware RNGs can be slow or fail without fallback  
+  - Poor seeding leads to weak, repeatable keys  
+
+---
+
+### Implementation Tips & Prerequisites
+
+- Always use vetted libraries (OpenSSL, libsodium, `cryptography`).  
+- Ensure OS RNG is healthy (monitor entropy pools).  
+- For sensitive keys, prefer hardware modules (TPM/HSM).  
+- Follow compliance standards (FIPS 140-2/3, PCI-DSS) when required.  
+- Rotate keys periodically and securely destroy old ones.  
+---
+
+![KG](https://github.com/uv-goswami/Cryptography/blob/88ca27e88372ff86bd61dcdbb245027ff2991852/Diagrams/KeyGeneration.drawio.svg)
+
+----
   
       
 
