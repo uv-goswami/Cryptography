@@ -1,2 +1,2 @@
 
-![](https://github.com/uv-goswami/Cryptography/blob/95dd2cb0ec7df90bc36b7c31ce4ea1e3bf8c9af7/Signal/signal_protocol.png)
+![](https://github.com/uv-goswami/Cryptography/blob/d4d44e66b31b351761817ddfd43684fd9f574b1d/Signal/Signal_protocol.png)
