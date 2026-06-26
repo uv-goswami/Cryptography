@@ -1,7 +1,5 @@
 
 ![Alt text for my diagram](Diagrams/Cryptography_comp.svg)
-Here’s a **cleanly structured and consolidated version** of your outline, with redundancy removed, categories properly nested, and content merged under **appropriate files**. I've also included a **short ALT text** for your overall **diagram/image** at the end as requested.
-
 ---
 
 ## 📂 Project Structure – Cryptography & Privacy Stack
